@@ -6,30 +6,37 @@ use ApiPlatform\Metadata\ApiResource;
 use App\Repository\InvoiceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: InvoiceRepository::class)]
-#[ApiResource]
+#[ApiResource(normalizationContext: ['groups' => ['invoice_read']])]
 class Invoice
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['invoice_read', 'customer_read'])]
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Groups(['invoice_read', 'customer_read'])]
     private ?float $amount = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['invoice_read', 'customer_read'])]
     private ?\DateTimeInterface $sentAt = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['invoice_read', 'customer_read'])]
     private ?string $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'invoices')]
+    #[Groups(['invoice_read'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?Customer $customer = null;
 
     #[ORM\Column]
+    #[Groups(['invoice_read', 'customer_read'])]
     private ?int $chrono = null;
 
     public function getId(): ?int
